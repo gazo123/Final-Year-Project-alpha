@@ -4,7 +4,7 @@ from share_distributor import ShareDistributor
 
 # Static IPs of Foreign Servers
 FOREIGN_SERVERS = [
-    ("192.168.0.111", 8001),
+    ("192.168.0.2", 8001),
     ("192.168.0.3", 8002),
     ("192.168.0.4", 8003),
 ]
