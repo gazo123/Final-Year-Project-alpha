@@ -1,11 +1,11 @@
 import random
 
 class ShareGenerator:
-     def __init__(self, n,t):
-          self.n=n
-          self.t=t
+     def __init__(self, n, t):
+          self.n = n
+          self.t = t
 
-     def eval_polynomial(self,coeffs, x, prime):
+     def eval_polynomial(self, coeffs, x, prime):
           result = 0
           for power, coef in enumerate(coeffs):
                result += coef * (x ** power)
@@ -23,12 +23,11 @@ class ShareGenerator:
                # Generate polynomial coefficients
                coeffs = [secret_int] + [random.randint(0, prime - 1) for _ in range(self.t - 1)]
 
-               # Generate n shares
+               # Generate n (x, y) shares
                for i in range(1, self.n + 1):
                     x = i
-                    y = sum(coeff * (x ** power) for power, coeff in enumerate(coeffs)) % prime
-                    all_shares[i - 1][user] = y
+                    y = self.eval_polynomial(coeffs, x, prime)
+                    all_shares[i - 1][user] = (x, y)  # Store as tuple
 
-          return all_shares  # List of dicts, one per FS
-
+          return all_shares
 

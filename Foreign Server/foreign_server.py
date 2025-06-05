@@ -84,8 +84,7 @@ def mobile_user_request_listener():
                 if username in shares:
                     print(f"[✓] Sent result found")
                     shares =send_share_request(username)
-                    for share in shares:
-                        print(share)  
+                    print(shares)
                     
                 else:
                     print("NOT_FOUND")
