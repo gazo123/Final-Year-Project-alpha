@@ -88,8 +88,8 @@ def mobile_user_request_listener():
                     rest_shares = [tuple(ast.literal_eval(i)) for i in rest_shares]
                     own_share = shares.get(username)
 
-                    total_shares = rest_shares + tuple(own_share)
-                    print(total_shares)
+                    rest_shares.append(tuple(own_share))
+                    print(rest_shares)
 
                     
                 else:
