@@ -1,0 +1,34 @@
+import random
+
+class ShareGenerator:
+     def __init__(self, n,t):
+          self.n=n
+          self.t=t
+
+     def eval_polynomial(self,coeffs, x, prime):
+          result = 0
+          for power, coef in enumerate(coeffs):
+               result += coef * (x ** power)
+          return result % prime
+
+     def create_shares(self, user_dict):
+          all_shares = [{} for _ in range(self.n)]  # List of n dicts, one for each FS
+          prime = 2089  # Large enough prime for secrets
+
+          for user, secret in user_dict.items():
+               # Convert secret string to integer
+               secret_bytes = secret.encode('utf-8')
+               secret_int = int.from_bytes(secret_bytes, byteorder='big') % prime
+
+               # Generate polynomial coefficients
+               coeffs = [secret_int] + [random.randint(0, prime - 1) for _ in range(self.t - 1)]
+
+               # Generate n shares
+               for i in range(1, self.n + 1):
+                    x = i
+                    y = sum(coeff * (x ** power) for power, coeff in enumerate(coeffs)) % prime
+                    all_shares[i - 1][user] = y
+
+          return all_shares  # List of dicts, one per FS
+
+
