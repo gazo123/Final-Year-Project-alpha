@@ -10,7 +10,7 @@ GET_SHARE_PORT = 9001
 MOBILE_USER_PORT = 9002
 
 registry = UserRegistry()
-
+#-------------------------------------------------------------------------------------------------------------------------
 def start_foreign_server():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
