@@ -50,7 +50,10 @@ def get_share_request_listener():
                 share = shares.get(username, "NOT_FOUND")
                 conn.sendall(json.dumps(share).encode())
                 print(f"[✓] Sent share: {share}")
-#----------------------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------
+
+def reconstructed_key()
+#--------------------------------------------------------------------------------------------------------------------------------------
 def send_share_request(username):
     other_servers = [("192.168.0.2", GET_SHARE_PORT),("192.168.0.4", GET_SHARE_PORT)]  # Replace with actual FS IPs & exclude own
     print(f"[→] Requesting shares for '{username}'...")
@@ -89,7 +92,10 @@ def mobile_user_request_listener():
                     own_share = shares.get(username)
 
                     rest_shares.append(tuple(own_share))
-                    print(rest_shares)
+
+                    reconstructed_key = reconstruct_key(rest_shares)
+
+                    print(reconstructed_key)
 
                     
                 else:
