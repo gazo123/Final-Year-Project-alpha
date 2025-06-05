@@ -53,6 +53,7 @@ def get_share_request_listener():
 def send_share_request(username):
     other_servers = [("192.168.0.3", GET_SHARE_PORT), ("192.168.0.4", GET_SHARE_PORT)]  # Replace with actual FS IPs & exclude own
     print(f"[→] Requesting shares for '{username}'...")
+    responses=[]
 
     for ip, port in other_servers:
         try:
@@ -61,6 +62,7 @@ def send_share_request(username):
                 s.sendall(username.encode())
                 response = s.recv(4096).decode()
                 print(f"[✓] Share from {ip}:{port} → {response}")
+                responses.append(response)
         except Exception as e:
             print(f"[!] Failed to get share from {ip}:{port} - {e}")
 
@@ -72,7 +74,6 @@ def mobile_user_request_listener():
         s.bind((HOST, MOBILE_USER_PORT))
         s.listen()
         print(f"[$] Listening for Mobile User requests on port {MOBILE_USER_PORT}...")
-
         while True:
             conn, addr = s.accept()
             with conn:
@@ -106,7 +107,9 @@ if __name__ == "__main__":
 
         if choice == "1":
             username = input("Enter username to request shares: ").strip()
-            send_share_request(username)
+            shares =send_share_request(username)
+            for share in shares:
+                print(share)
 
         elif choice == "2":
             shares = registry.load_shares()
