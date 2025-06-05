@@ -51,7 +51,7 @@ def get_share_request_listener():
                 print(f"[✓] Sent share: {share}")
 #----------------------------------------------------------------------------------------------------------------------------------
 def send_share_request(username):
-    other_servers = [("192.168.0.2", GET_SHARE_PORT), ("192.168.0.4", GET_SHARE_PORT)]  # Replace with actual FS IPs & exclude own
+    other_servers = [("192.168.0.2", GET_SHARE_PORT)]  # Replace with actual FS IPs & exclude own
     print(f"[→] Requesting shares for '{username}'...")
     responses=[]
 
