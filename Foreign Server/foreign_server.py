@@ -80,9 +80,15 @@ def mobile_user_request_listener():
                 username = conn.recv(1024).decode().strip()
                 print(f"[👤] Mobile user lookup for '{username}' from {addr}")
                 shares = registry.load_shares()
-                result = "FOUND" if username in shares else "NOT_FOUND"
-                conn.sendall(result.encode())
-                print(f"[✓] Sent result: {result}")
+                if username in shares:
+                    print(f"[✓] Sent result found")
+                    shares =send_share_request(username)
+                    for share in shares:
+                        print(share)  
+                    
+                else:
+                    print("NOT_FOUND")
+                
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------
