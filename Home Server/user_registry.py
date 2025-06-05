@@ -3,7 +3,7 @@ import os
 class UserRegistry:
     def __init__(self):
         self.users = {}  # {user_id: secret_key}
-        self.filename="Home Server/user_data/registered_users.json"
+        self.filename="user_data/registered_users.json"
 
     def add_user(self, user_id, key):
         self.users[user_id] = key
