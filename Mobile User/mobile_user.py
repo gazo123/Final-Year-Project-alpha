@@ -19,7 +19,7 @@ def send_pid_to_foreign_server(username, pid, target_ip, target_port):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((target_ip, target_port))
             payload = json.dumps({username: pid})
-            s.sendall(username.encode())  # or s.sendall(payload.encode()) if FS expects JSON
+            s.sendall(payload.encode()) # s.sendall(username.encode()) 
             print(f"[✓] Sent PID for '{username}' to {target_ip}:{target_port}")
     except Exception as e:
         print(f"[!] Error sending to FS: {e}")

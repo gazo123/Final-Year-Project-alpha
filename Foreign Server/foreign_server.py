@@ -3,6 +3,7 @@ import json
 from user_registry import UserRegistry
 import threading
 import ast
+import hashlib
 
 HOST = '192.168.0.3'  # Change this to match this server's static IP
 PORT = 8001           # Change to the correct port for this FS
@@ -50,9 +51,8 @@ def get_share_request_listener():
                 share = shares.get(username, "NOT_FOUND")
                 conn.sendall(json.dumps(share).encode())
                 print(f"[✓] Sent share: {share}")
-# -------------------------------------------------------------------------------------------------------------------------------------
 
-def reconstructed_key()
+
 #--------------------------------------------------------------------------------------------------------------------------------------
 def send_share_request(username):
     other_servers = [("192.168.0.2", GET_SHARE_PORT),("192.168.0.4", GET_SHARE_PORT)]  # Replace with actual FS IPs & exclude own
@@ -82,7 +82,9 @@ def mobile_user_request_listener():
         while True:
             conn, addr = s.accept()
             with conn:
-                username = conn.recv(1024).decode().strip()
+                payload = conn.recv(1024).decode().strip()
+                username, pid = next(iter(payload.items()))
+
                 print(f"[👤] Mobile user lookup for '{username}' from {addr}")
                 shares = registry.load_shares()
                 if username in shares:
@@ -92,17 +94,55 @@ def mobile_user_request_listener():
                     own_share = shares.get(username)
 
                     rest_shares.append(tuple(own_share))
-
+# TEST FROM HERE---------------------------------------------------------
                     reconstructed_key = reconstruct_key(rest_shares)
 
-                    print(reconstructed_key)
+                    new_pid = compute_pid(username,reconstructed_key)
+
+                    print(pid)
+                    print(new_pid)
+                    if pid == new_pid:
+                        print(f"[$] User {username} Authentication Successful")
+                    else:
+                        print("[*] User Authentication Unsuccessful")
+                    
 
                     
                 else:
                     print("NOT_FOUND")
                 
+# -------------------------------------------------------------------------------------------------------------------------------------
 
+def reconstruct_key(shares):
+    """
+    Reconstructs the original secret using Lagrange interpolation.
+    shares: list of (x, y) tuples
+    prime: the same prime used for share generation
+    """
+    prime=2089
+    def _lagrange_basis(j, x_values):
+        num, den = 1, 1
+        xj = x_values[j]
+        for m, xm in enumerate(x_values):
+            if m != j:
+                num = (num * -xm) % prime
+                den = (den * (xj - xm)) % prime
+        return (num * pow(den, -1, prime)) % prime  # mod inverse
 
+    x_values = [x for x, _ in shares]
+    y_values = [y for _, y in shares]
+
+    secret = 0
+    for j in range(len(shares)):
+        lj = _lagrange_basis(j, x_values)
+        secret = (secret + y_values[j] * lj) % prime
+
+    return secret
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+def compute_pid(username, key):
+    pid_input = f"{username}:{key}"
+    return hashlib.sha256(pid_input.encode()).hexdigest()
 #----------------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -118,18 +158,11 @@ if __name__ == "__main__":
     # Step 3: Interactive main thread menu
     while True:
         print("\n------ Foreign Server Menu ------")
-        print("1. Send share request for username")
-        print("2. Display all stored shares")
-        print("3. Exit")
-        choice = input("Select an option (1/2/3): ").strip()
+        print("1. Display all stored shares")
+        print("2. Exit")
+        choice = input("Select an option (1/2): ").strip()
 
         if choice == "1":
-            username = input("Enter username to request shares: ").strip()
-            shares =send_share_request(username)
-            for share in shares:
-                print(share)
-
-        elif choice == "2":
             shares = registry.load_shares()
             if shares:
                 print("\n[$] Stored Shares:")
@@ -138,7 +171,7 @@ if __name__ == "__main__":
             else:
                 print("[!] No shares stored yet.")
 
-        elif choice == "3":
+        elif choice == "2":
             print("Exiting...")
             break
 
