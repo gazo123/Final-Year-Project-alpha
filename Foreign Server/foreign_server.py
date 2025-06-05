@@ -65,6 +65,7 @@ def send_share_request(username):
                 responses.append(response)
         except Exception as e:
             print(f"[!] Failed to get share from {ip}:{port} - {e}")
+    return responses
 
 #-------------------------------------------------------------------------------------------------------------------------------------
 def mobile_user_request_listener():
