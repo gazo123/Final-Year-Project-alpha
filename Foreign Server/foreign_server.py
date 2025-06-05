@@ -83,8 +83,11 @@ def mobile_user_request_listener():
                 shares = registry.load_shares()
                 if username in shares:
                     print(f"[✓] Sent result found")
-                    shares =send_share_request(username)
-                    print(shares)
+                    rest_shares =send_share_request(username)
+                    own_share = shares.get(username)
+                    total_shares = rest_shares + own_share
+                    print(total_shares)
+
                     
                 else:
                     print("NOT_FOUND")
