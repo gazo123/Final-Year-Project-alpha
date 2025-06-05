@@ -51,7 +51,7 @@ def get_share_request_listener():
                 print(f"[✓] Sent share: {share}")
 #----------------------------------------------------------------------------------------------------------------------------------
 def send_share_request(username):
-    other_servers = [("192.168.0.2", GET_SHARE_PORT)]  # Replace with actual FS IPs & exclude own
+    other_servers = [("192.168.0.2", GET_SHARE_PORT),("192.168.0.4", GET_SHARE_PORT)]  # Replace with actual FS IPs & exclude own
     print(f"[→] Requesting shares for '{username}'...")
     responses=[]
 
@@ -83,8 +83,13 @@ def mobile_user_request_listener():
                 shares = registry.load_shares()
                 if username in shares:
                     print(f"[✓] Sent result found")
-                    shares =send_share_request(username)
-                    print(shares)
+                    rest_shares =send_share_request(username)
+                    rest_shares = [tuple(i) for i in rest_shares]
+                    # print(shares)
+                    own_shares = shares.get(username)
+                    total_share = tuple(own_shares) + rest_shares
+                    print(total_share)
+                    
                     
                 else:
                     print("NOT_FOUND")
