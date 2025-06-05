@@ -3,7 +3,7 @@ import json
 from user_registry import UserRegistry
 import threading
 
-HOST = '192.168.0.2'  # Change this to match this server's static IP
+HOST = '192.168.0.3'  # Change this to match this server's static IP
 PORT = 8001           # Change to the correct port for this FS
 GET_SHARE_PORT = 9001
 MOBILE_USER_PORT = 9002
@@ -51,7 +51,7 @@ def get_share_request_listener():
                 print(f"[✓] Sent share: {share}")
 #----------------------------------------------------------------------------------------------------------------------------------
 def send_share_request(username):
-    other_servers = [("192.168.0.3", GET_SHARE_PORT), ("192.168.0.4", GET_SHARE_PORT)]  # Replace with actual FS IPs & exclude own
+    other_servers = [("192.168.0.2", GET_SHARE_PORT), ("192.168.0.4", GET_SHARE_PORT)]  # Replace with actual FS IPs & exclude own
     print(f"[→] Requesting shares for '{username}'...")
     responses=[]
 
