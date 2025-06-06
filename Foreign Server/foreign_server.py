@@ -107,8 +107,6 @@ def mobile_user_request_listener():
                     else:
                         print("[*] User Authentication Unsuccessful")
                     
-
-                    
                 else:
                     print("NOT_FOUND")
                 
@@ -120,7 +118,7 @@ def reconstruct_key(shares):
     shares: list of (x, y) tuples
     prime: the same prime used for share generation
     """
-    prime = 2**521 - 1  # a known Mersenne prime (very large)
+    prime = 2089  # a known Mersenne prime (very large)
 
     def _lagrange_basis(j, x_values):
         num, den = 1, 1
