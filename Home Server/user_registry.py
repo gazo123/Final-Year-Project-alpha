@@ -16,6 +16,7 @@ class UserRegistry:
             json.dump(user_dict, f, indent=4)
         print(f"\nRegistered users saved to {self.filename}")
 
+
     def load_users_from_file(self):
         if not os.path.exists(self.filename):
             print("No existing user data found.")
