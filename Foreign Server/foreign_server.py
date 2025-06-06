@@ -83,6 +83,7 @@ def mobile_user_request_listener():
             conn, addr = s.accept()
             with conn:
                 payload = conn.recv(1024).decode().strip()
+                payload = ast.literal_eval(payload)
                 username, pid = next(iter(payload.items()))
 
                 print(f"[👤] Mobile user lookup for '{username}' from {addr}")
@@ -96,11 +97,11 @@ def mobile_user_request_listener():
                     rest_shares.append(tuple(own_share))
 # TEST FROM HERE---------------------------------------------------------
                     reconstructed_key = reconstruct_key(rest_shares)
-
+                    print(f"Reconstructed Key is {reconstructed_key}")
                     new_pid = compute_pid(username,reconstructed_key)
 
-                    print(pid)
-                    print(new_pid)
+                    print(f"Pid is {pid}")
+                    print(f"Pid from reconstructed key is {new_pid}")
                     if pid == new_pid:
                         print(f"[$] User {username} Authentication Successful")
                     else:
@@ -119,7 +120,8 @@ def reconstruct_key(shares):
     shares: list of (x, y) tuples
     prime: the same prime used for share generation
     """
-    prime=2089
+    prime = 2**521 - 1  # a known Mersenne prime (very large)
+
     def _lagrange_basis(j, x_values):
         num, den = 1, 1
         xj = x_values[j]
