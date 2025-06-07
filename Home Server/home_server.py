@@ -20,19 +20,20 @@ def main():
     # Step 1: Register 3 users
     for _ in range(3):
         user_id = input("Enter user name: ").strip()
-        key = input("Enter secret key: ").strip()
+        key = int(input("Enter secret key: ").strip())
         registry.add_user(user_id, key)
 
     # Step 2: Generate shares
     user_dict = registry.get_all_users()
+    print(user_dict)
     registry.save_users_to_file(user_dict)  # Save to file
 
     user_dict = registry.load_users_from_file()
+    print(user_dict)
     shares = generator.create_shares(user_dict)
     print("\nGenerated Shares:")
 
-    for idx, share_set in enumerate(shares):
-        print(f"Foreign Server {idx+1} gets: {share_set}")
+    print(shares)
 
     # Step 3: Distribute shares
     distributor.distribute(shares)
