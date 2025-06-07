@@ -1,8 +1,8 @@
 import json
 
 class UserRegistry:
-     def __init__(self):
-          self.filename = "received_shares.json"
+     def __init__(self, file_path):
+          self.filename = file_path
 
      def save_shares(self,shares):
           with open(self.filename, "w") as f:
