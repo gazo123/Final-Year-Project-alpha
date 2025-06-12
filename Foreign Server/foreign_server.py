@@ -1,15 +1,14 @@
 import socket
-from config import HOST,PORT,GET_SHARE_PORT,MOBILE_USER_PORT,RECEIVE_SHARE_FILE_PATH
+from config import HOST,PORT,GET_SHARE_PORT,MOBILE_USER_PORT,RECEIVE_SHARE_FILE_PATH,MOBILE_AUTHENTICATION_PORT
 from user_registry import UserRegistry
 import json
-
 import ast
 import hashlib
 
 registry = UserRegistry(RECEIVE_SHARE_FILE_PATH)
 
 class ForeignServer:
-     def __init__():
+     def __init__(self):
           pass
 
      def start_foreign_server():
@@ -72,7 +71,45 @@ class ForeignServer:
      
      #-------------------------------------------------------------------------------------------------------------------------------------
      def mobile_user_request_listener():
-          """Checks if Mobile User's username exists in own shares"""
+          
+          def compute_pid(username, key):
+               pid_input = f"{username}:{key}"
+               return hashlib.sha256(pid_input.encode()).hexdigest()
+          # -------------------------------------------------------------------------------------------------------------------------------------
+          def send_authentication_message(mobile_ip, mobile_port):
+               with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as s:
+                    s.connect((mobile_ip,mobile_port))
+                    msg="AUTHENTICATED"
+                    s.sendall(msg.encode())
+                    
+          # -------------------------------------------------------------------------------------------------------------------------------------
+
+          def reconstruct_key(shares):
+               """
+               Reconstructs the original secret using Lagrange interpolation.
+               shares: list of (x, y) tuples
+               prime: the same prime used for share generation
+               """
+               prime = 2089  # a known Mersenne prime (very large)
+
+               def _lagrange_basis(j, x_values):
+                    num, den = 1, 1
+                    xj = x_values[j]
+                    for m, xm in enumerate(x_values):
+                         if m != j:
+                              num = (num * -xm) % prime
+                              den = (den * (xj - xm)) % prime
+                    return (num * pow(den, -1, prime)) % prime  # mod inverse
+
+               x_values = [x for x, _ in shares]
+               y_values = [y for _, y in shares]
+
+               secret = 0
+               for j in range(len(shares)):
+                    lj = _lagrange_basis(j, x_values)
+                    secret = (secret + y_values[j] * lj) % prime
+
+               return secret
 
           with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                s.bind((HOST, MOBILE_USER_PORT))
@@ -80,6 +117,7 @@ class ForeignServer:
                print(f"[$] Listening for Mobile User requests on port {MOBILE_USER_PORT}...")
                while True:
                     conn, addr = s.accept()
+                    mobile_ip,_=addr
                     with conn:
                          payload = conn.recv(1024).decode().strip()
                          payload = ast.literal_eval(payload)
@@ -96,51 +134,27 @@ class ForeignServer:
                               rest_shares.append(tuple(own_share))
                               
                          # TEST FROM HERE---------------------------------------------------------
-                              reconstructed_key = ForeignServer.reconstruct_key(rest_shares)
+                              reconstructed_key = reconstruct_key(rest_shares)
                               print(f"Reconstructed Key is {reconstructed_key}")
-                              new_pid = ForeignServer.compute_pid(username,reconstructed_key)
+                              new_pid = compute_pid(username,reconstructed_key)
 
                               print(f"Pid is {pid}")
                               print(f"Pid from reconstructed key is {new_pid}")
                               if pid == new_pid:
-                                   print(f"[$] User {username} Authentication Successful")
+                                   print(f"[*] User {username} Authentication Successful")
+                                   send_authentication_message(mobile_ip, MOBILE_AUTHENTICATION_PORT)
+
                               else:
-                                   print("[*] User Authentication Unsuccessful")
+                                   print("[!] User Authentication Unsuccessful")
                               
                          else:
-                              print("NOT_FOUND")
-     
+                              print("[!] USERNAME NOT FOUND")
+          
+          
+
+   
      # -------------------------------------------------------------------------------------------------------------------------------------
 
-     def reconstruct_key(shares):
-          """
-          Reconstructs the original secret using Lagrange interpolation.
-          shares: list of (x, y) tuples
-          prime: the same prime used for share generation
-          """
-          prime = 2089  # a known Mersenne prime (very large)
+     
 
-          def _lagrange_basis(j, x_values):
-               num, den = 1, 1
-               xj = x_values[j]
-               for m, xm in enumerate(x_values):
-                    if m != j:
-                         num = (num * -xm) % prime
-                         den = (den * (xj - xm)) % prime
-               return (num * pow(den, -1, prime)) % prime  # mod inverse
-
-          x_values = [x for x, _ in shares]
-          y_values = [y for _, y in shares]
-
-          secret = 0
-          for j in range(len(shares)):
-               lj = _lagrange_basis(j, x_values)
-               secret = (secret + y_values[j] * lj) % prime
-
-          return secret
-
-     #------------------------------------------------------------------------------------------------------------------------------------------
-     def compute_pid(username, key):
-          pid_input = f"{username}:{key}"
-          return hashlib.sha256(pid_input.encode()).hexdigest()
      #----------------------------------------------------------------------------------------------------------------------------------------
