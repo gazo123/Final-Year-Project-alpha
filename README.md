@@ -56,7 +56,7 @@ FINAL-YEAR-PROJECT/
 On **each Foreign Server device**, run the `main.py` script from the `Foreign Server/` directory:
 
 ```bash
-python Foreign\ Server/main.py
+python 'Foreign Server'/main.py
 ````
 
 This will:
@@ -71,7 +71,7 @@ This will:
 On the **Home Server device**, run the `main.py` script from the `Home Server/` directory:
 
 ```bash
-python Home\ Server/main.py
+python 'Home Server'/main.py
 ```
 
 This will:
@@ -87,7 +87,7 @@ This will:
 On the **Mobile User device**, run the `main.py` script from the `Mobile User/` directory:
 
 ```bash
-python Mobile\ User/main.py
+python 'Mobile User'/main.py
 ```
 
 This will:
@@ -118,5 +118,8 @@ This will:
 ## 👨‍💻 Author
 
 * Pushan Karmakar
+* Dibya Shankar Jha
+* Arkapriya Chanda
+* Pritam Chakroborty
 
 
