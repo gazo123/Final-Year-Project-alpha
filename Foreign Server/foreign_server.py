@@ -98,9 +98,9 @@ class ForeignServer:
                for j in range(len(shares)):
                     lj = _lagrange_basis(j, x_values)
                     secret = (secret + y_values[j] * lj) % prime
-
+                    
                return secret
-          #------------------------------------------------------------------------------------------------------------------
+          #------------------------------------------------------------------------------------------------
           def authenticate_mu():
                #-----------------------------------------------------------
                def _compute_pid(username, key):
@@ -143,5 +143,5 @@ class ForeignServer:
                          username, pid = next(iter(payload.items()))
 
                          print(f"[-] Mobile user lookup for '{username}' from {addr}")
-                         authenticate_mu(username, pid, payload)
+                         authenticate_mu(username, pid, payload)  #possible error
                          return #possible error

@@ -10,12 +10,11 @@ if __name__ == "__main__":
     distributor = ShareDistributor(FOREIGN_SERVERS)
 
     # Step 1: Register users
-    num_users=2
+    num_users = 2
     for _ in range(num_users):
         user_id = input("Enter user name: ").strip()
         key = int(input("Enter secret key: ").strip())
         registry.add_user(user_id, key)
-
     
     user_dict = registry.get_all_users()
     registry.save_users_to_file(user_dict)          # Save shares to file
@@ -24,5 +23,5 @@ if __name__ == "__main__":
     user_dict = registry.load_users_from_file()
     shares = generator.create_shares(user_dict)     #creating shares
 
-    # # Step 3: Distribute shares
+    # Step 3: Distribute shares
     distributor.distribute(shares)

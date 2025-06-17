@@ -11,13 +11,11 @@ if __name__ == "__main__":
     pid = MobileUser.compute_pid(username, key)   #hashing the username and 
     print(f"[→] Computed PID: {pid}")               #DEBUG CODE
 
-
     print("\nSelect Foreign Server to send to:")
     for idx, (ip, port) in FOREIGN_SERVERS.items():
         print(f"Foreign Server {idx}:  {ip}:{port}")
     
     choice = input("Enter option (1/2/3): ").strip()
-
 
     if choice in FOREIGN_SERVERS:
         target_ip, target_port = FOREIGN_SERVERS[choice]
