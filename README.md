@@ -23,6 +23,7 @@ This project:
 
 ## 📁 Folder Structure
 
+'''bash
 FINAL-YEAR-PROJECT/
 ├── Home Server/
 │   ├── share_generator.py
@@ -46,7 +47,7 @@ FINAL-YEAR-PROJECT/
 │
 ├── README.md
 └── .gitattributes
-
+'''
 
 
 ## 🛠 How to Run the Project
