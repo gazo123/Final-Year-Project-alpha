@@ -12,6 +12,8 @@ Traditional authentication relies heavily on a central server (Home Server), lea
 - Scalability issues with increased users.
 - Privacy concerns and single points of failure.
 
+![[Screenshot (529).png]]
+
 ### Solution
 This project:
 - Uses a **(t, n)** threshold scheme to split a user's secret key.
