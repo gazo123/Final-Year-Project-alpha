@@ -72,24 +72,14 @@ class ForeignServer:
      #-------------------------------------------------------------------------------------------------------------------------------------
      def mobile_user_request_listener():
           
-          def compute_pid(username, key):
-               pid_input = f"{username}:{key}"
-               return hashlib.sha256(pid_input.encode()).hexdigest()
-          # -------------------------------------------------------------------------------------------------------------------------------------
-          def send_authentication_message(mobile_ip, mobile_port):
+          def send_authentication_message(mobile_ip, mobile_port, msg):
                with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as s:
                     s.connect((mobile_ip,mobile_port))
-                    msg="AUTHENTICATED"
                     s.sendall(msg.encode())
                     
-          # -------------------------------------------------------------------------------------------------------------------------------------
+          # ------------------------------------------------------------------------------------------
 
           def reconstruct_key(shares):
-               """
-               Reconstructs the original secret using Lagrange interpolation.
-               shares: list of (x, y) tuples
-               prime: the same prime used for share generation
-               """
                prime = 2089  # a known Mersenne prime (very large)
 
                def _lagrange_basis(j, x_values):
@@ -110,6 +100,35 @@ class ForeignServer:
                     secret = (secret + y_values[j] * lj) % prime
 
                return secret
+          #------------------------------------------------------------------------------------------------------------------
+          def authenticate_mu():
+               #-----------------------------------------------------------
+               def _compute_pid(username, key):
+                    pid_input = f"{username}:{key}"
+                    return hashlib.sha256(pid_input.encode()).hexdigest()
+               #-----------------------------------------------------------
+               shares = registry.load_shares()
+               if username in shares:
+                    print(f"[+] Sent result found")
+
+                    rest_shares =ForeignServer.send_share_request(username)          #getting all shares into rest_shares
+                    rest_shares = [tuple(ast.literal_eval(i)) for i in rest_shares]
+                    own_share = shares.get(username)
+                    rest_shares.append(tuple(own_share))
+                    
+                    reconstructed_key = reconstruct_key(rest_shares)
+                    new_pid = _compute_pid(username,reconstructed_key)
+
+                    if pid == new_pid:
+                         print(f"[+] USER AUTHENTICATION SUCCESSFUL") #DEBUG
+                         send_authentication_message(mobile_ip, MOBILE_AUTHENTICATION_PORT, "[+] USER AUTHENTICATION SUCCESSFUL")
+
+                    else:
+                         print("[!] USER AUTHENTICATION UNSUCCESSFUL") #DEBUG
+                         send_authentication_message(mobile_ip, MOBILE_AUTHENTICATION_PORT, "[!] USER AUTHENTICATION UNSUCCESSFUL")
+
+               else:
+                    print("[!] USERNAME NOT FOUND")
 
           with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                s.bind((HOST, MOBILE_USER_PORT))
@@ -123,38 +142,6 @@ class ForeignServer:
                          payload = ast.literal_eval(payload)
                          username, pid = next(iter(payload.items()))
 
-                         print(f"[👤] Mobile user lookup for '{username}' from {addr}")
-                         shares = registry.load_shares()
-                         if username in shares:
-                              print(f"[✓] Sent result found")
-                              rest_shares =ForeignServer.send_share_request(username)
-                              rest_shares = [tuple(ast.literal_eval(i)) for i in rest_shares]
-                              own_share = shares.get(username)
-
-                              rest_shares.append(tuple(own_share))
-                              
-                         # TEST FROM HERE---------------------------------------------------------
-                              reconstructed_key = reconstruct_key(rest_shares)
-                              print(f"Reconstructed Key is {reconstructed_key}")
-                              new_pid = compute_pid(username,reconstructed_key)
-
-                              print(f"Pid is {pid}")
-                              print(f"Pid from reconstructed key is {new_pid}")
-                              if pid == new_pid:
-                                   print(f"[*] User {username} Authentication Successful")
-                                   send_authentication_message(mobile_ip, MOBILE_AUTHENTICATION_PORT)
-
-                              else:
-                                   print("[!] User Authentication Unsuccessful")
-                              
-                         else:
-                              print("[!] USERNAME NOT FOUND")
-          
-          
-
-   
-     # -------------------------------------------------------------------------------------------------------------------------------------
-
-     
-
-     #----------------------------------------------------------------------------------------------------------------------------------------
+                         print(f"[-] Mobile user lookup for '{username}' from {addr}")
+                         authenticate_mu(username, pid, payload)
+                         return #possible error

@@ -14,12 +14,8 @@ class ShareGenerator:
 
      def create_shares(self, user_dict):
           all_shares = [{} for _ in range(self.n)]  # List of n dicts, one for each FS
-            # a known Mersenne prime (very large)
 
           for user, secret in user_dict.items():
-               # Convert secret string to integer
-               # secret_bytes = secret.encode('utf-8')
-               # secret_int = int.from_bytes(secret_bytes, byteorder='big') % prime
                secret_int = secret
 
                # Generate polynomial coefficients

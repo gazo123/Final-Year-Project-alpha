@@ -18,12 +18,14 @@ if __name__ == "__main__":
     
     choice = input("Enter option (1/2/3): ").strip()
 
-    #switching on the authentication message reply listener
-    threading.Thread(target=MobileUser.authentication_message_listener(),daemon=True).start()
 
     if choice in FOREIGN_SERVERS:
         target_ip, target_port = FOREIGN_SERVERS[choice]
         MobileUser.send_pid_to_foreign_server(username, pid, target_ip, target_port)
+
+         #switching on the authentication message reply listener
+        threading.Thread(target=MobileUser.authentication_message_listener(),daemon=True).start()
+        
     else:
         print("[!] Invalid choice. Exiting.")
 

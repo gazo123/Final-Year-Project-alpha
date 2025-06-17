@@ -11,6 +11,7 @@ class MobileUser:
     #----------------------------------------------------------------------------------------------------------------------------------------------
     def send_pid_to_foreign_server(username, pid, target_ip, target_port):
         try:
+            print("trying to send pid to FA")
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((target_ip, target_port))
                 payload = json.dumps({username: pid})
@@ -30,3 +31,4 @@ class MobileUser:
                 with conn:
                     msg = conn.recv(1024).decode()
                     print(msg)
+                    return   #possible error

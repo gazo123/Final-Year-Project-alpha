@@ -9,8 +9,8 @@ if __name__ == "__main__":
     generator = ShareGenerator(N_SHARES,THRESHOLD)
     distributor = ShareDistributor(FOREIGN_SERVERS)
 
-    # Step 1: Register 3 users
-    num_users=5
+    # Step 1: Register users
+    num_users=2
     for _ in range(num_users):
         user_id = input("Enter user name: ").strip()
         key = int(input("Enter secret key: ").strip())
