@@ -48,42 +48,6 @@ FINAL-YEAR-PROJECT/
 └── .gitattributes
 
 
-Here’s a clean and clear `README.md` file that explains how to run your project, based on the procedure you described:
-
----
-
-```markdown
-# FINAL-YEAR-PROJECT
-
-This project implements a secure distributed authentication system using **Shamir's Secret Sharing**. It involves three main components:
-- **Home Server**
-- **Foreign Servers (FS)**
-- **Mobile User Device**
-
----
-
-## 📁 Project Structure
-
-```
-
-FINAL-YEAR-PROJECT/
-├── Home Server/
-│   ├── user\_data/
-│   ├── main.py
-│   ├── config.py
-│   └── ...
-├── Foreign Server/
-│   ├── main.py
-│   ├── foreign\_server.py
-│   └── ...
-├── Mobile User/
-│   ├── main.py
-│   └── ...
-└── README.md
-
-````
-
----
 
 ## 🛠 How to Run the Project
 
