@@ -25,29 +25,29 @@ This project:
 
 ## 📁 Folder Structure
 
-```bash
+```
 FINAL-YEAR-PROJECT/
-├── Home Server/
+|	├── Home Server/                  (scripts to run home server)
 │   ├── share_generator.py
 │   |── main.py
 │   ├── user_registry.py
 │   └── share_distributor.py
 │   └── config.py
 │
-├── Foreign Server/
+	├── Foreign Server/               (scripts to run foreign server)
 │   ├── foreign_server.py
 │   ├── config.py
 │   ├── main.py
 │   └── user_registry.py
 │
-├── Mobile User/
+├── Mobile User/                       (scripts to run mobile user)
 │   ├── mobile_user.py
 │   ├── main.py
 │   └── config.py
 │
-├── tester/         (contains scripts to check latency by changing threshold values)
+├── tester/       (contains scripts to check latency by changing threshold values)
 │
-├── README.md
+├── README.md          (explains how to operate the software)
 └── .gitattributes
 ```
 
