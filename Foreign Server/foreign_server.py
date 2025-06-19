@@ -101,7 +101,7 @@ class ForeignServer:
                     
                return secret
           #------------------------------------------------------------------------------------------------
-          def authenticate_mu():
+          def authenticate_mu(username, pid, mobile_ip):
                #-----------------------------------------------------------
                def _compute_pid(username, key):
                     pid_input = f"{username}:{key}"
@@ -143,5 +143,4 @@ class ForeignServer:
                          username, pid = next(iter(payload.items()))
 
                          print(f"[-] Mobile user lookup for '{username}' from {addr}")
-                         authenticate_mu(username, pid, payload)  #possible error
-                         return #possible error
+                         authenticate_mu(username, pid, mobile_ip)  #possible error
